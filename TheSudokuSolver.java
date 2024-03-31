@@ -3,7 +3,7 @@ import java.util.Arrays;
 public class TheSudokuSolver {
     private int[][] board;
 
-    public SudokuSolver(int[][] board) {
+    public TheSudokuSolver(int[][] board) {
         this.board = board;
     }
 
@@ -123,7 +123,7 @@ public class TheSudokuSolver {
             {0, 0, 0, 0, 8, 0, 0, 7, 9}
         };
 
-        SudokuSolver solver = new SudokuSolver(puzzle);
+        TheSudokuSolver solver = new TheSudokuSolver(puzzle);
         solver.solve();
     }
 }

@@ -1,22 +1,24 @@
 import java.util.Arrays;
 
-public class TheSudokuSolver {
+public class SudokuSolverincremental {
     private int[][] board; // 2D array representing the Sudoku board
 
     // Constructor to initialize the Sudoku board
-    public TheSudokuSolver(int[][] board) {
+    public SudokuSolverincremental(int[][] board) {
         this.board = board;
     }
 
     // Method to solve the Sudoku puzzle
     public void solve() {
-        long startTime = System.currentTimeMillis(); // Record the starting time
+        long startTime = System.nanoTime(); // Record the starting time
         
         if (solveSudoku()) { // If Sudoku puzzle is solved successfully
-            long endTime = System.currentTimeMillis(); // Record the ending time
+            long endTime = System.nanoTime(); // Record the ending time
             System.out.println("Sudoku puzzle solved:");
             printBoard(); // Print the solved puzzle
-            System.out.println("Time taken: " + (endTime - startTime) + " milliseconds"); // Print time taken to solve
+            long timeTaken = endTime - startTime;
+            System.out.println("Time taken: " + timeTaken + " nanseconds"); // Print time taken to solve
+            System.out.println("Level: " + getLevel(timeTaken)); // Print the level of the puzzle
         } else {
             System.out.println("No solution exists."); // If no solution exists
         }
@@ -121,23 +123,108 @@ public class TheSudokuSolver {
             System.out.println(Arrays.toString(board[i])); // Print each row of the board
         }
     }
-
-    // Main method to create a SudokuSolver object and solve the puzzle
-    public static void main(String[] args) {
-        // Initial Sudoku puzzle
-        int[][] puzzle = {
-            {5, 3, 0, 0, 7, 0, 0, 0, 0},
-            {6, 0, 0, 1, 9, 5, 0, 0, 0},
-            {0, 9, 8, 0, 0, 0, 0, 6, 0},
-            {8, 0, 0, 0, 6, 0, 0, 0, 3},
-            {4, 0, 0, 8, 0, 3, 0, 0, 1},
-            {7, 0, 0, 0, 2, 0, 0, 0, 6},
-            {0, 6, 0, 0, 0, 0, 2, 8, 0},
-            {0, 0, 0, 4, 1, 9, 0, 0, 5},
-            {0, 0, 0, 0, 8, 0, 0, 7, 9}
-        };
-
-        TheSudokuSolver solver = new TheSudokuSolver(puzzle);
-        solver.solve(); // Solve the Sudoku puzzle
+    
+    // Method to determine the level of the puzzle based on computational time
+    private String getLevel(long timeTaken) {
+        if (timeTaken < 1000) {
+            return "Easy";
+        } else if (timeTaken < 5000) {
+            return "Medium";
+        } else {
+            return "Difficult";
+        }
     }
+
+    // Main method to solve the Sudoku puzzles
+ public static void main(String[] args) {
+     System.out.println(" Incremental formulation");
+
+    // Array of Sudoku puzzles
+    int[][][] puzzles = {
+        // Easy puzzles
+        {
+            {5, 3, 4, 6, 7, 8, 9, 1, 2},
+            {6, 7, 2, 1, 9, 5, 3, 4, 8},
+            {1, 9, 8, 3, 4, 2, 5, 6, 7},
+            {8, 5, 9, 7, 6, 1, 4, 2, 3},
+            {4, 2, 6, 8, 5, 3, 7, 9, 1},
+            {7, 1, 3, 9, 2, 4, 8, 5, 6},
+            {9, 6, 1, 5, 3, 7, 2, 8, 4},
+            {2, 8, 7, 4, 1, 9, 6, 3, 5},
+            {3, 4, 5, 2, 8, 6, 1, 7, 9}
+        },
+        {
+            {1, 2, 3, 4, 5, 6, 7, 8, 9},
+            {4, 5, 6, 7, 8, 9, 1, 2, 3},
+            {7, 8, 9, 1, 2, 3, 4, 5, 6},
+            {2, 3, 1, 5, 6, 4, 8, 9, 7},
+            {5, 6, 4, 8, 9, 7, 2, 3, 1},
+            {8, 9, 7, 2, 3, 1, 5, 6, 4},
+            {3, 1, 2, 6, 4, 5, 9, 7, 8},
+            {6, 4, 5, 9, 7, 8, 3, 1, 2},
+            {9, 7, 8, 3, 1, 2, 6, 4, 5}
+        },
+        // Medium puzzles
+        {
+            {1, 2, 3, 4, 5, 6, 7, 8, 9},
+            {4, 5, 6, 7, 8, 9, 1, 2, 3},
+            {7, 8, 9, 1, 2, 3, 4, 5, 6},
+            {2, 3, 1, 5, 6, 4, 8, 9, 7},
+            {5, 6, 4, 8, 9, 7, 2, 3, 1},
+            {8, 9, 7, 2, 3, 1, 5, 6, 4},
+            {3, 1, 2, 6, 4, 5, 9, 7, 8},
+            {6, 4, 5, 9, 7, 8, 3, 1, 2},
+            {9, 7, 8, 3, 1, 2, 6, 4, 5}
+        },
+        {
+            {1, 2, 3, 4, 5, 6, 7, 8, 9},
+            {4, 5, 6, 7, 8, 9, 1, 2, 3},
+            {7, 8, 9, 1, 2, 3, 4, 5, 6},
+            {2, 3, 1, 5, 6, 4, 8, 9, 7},
+            {5, 6, 4, 8, 9, 7, 2, 3, 1},
+            {8, 9, 7, 2, 3, 1, 5, 6, 4},
+            {3, 1, 2, 6, 4, 5, 9, 7, 8},
+            {6, 4, 5, 9, 7, 8, 3, 1, 2},
+            {9, 7, 8, 3, 1, 2, 6, 4, 5}
+        },
+        // Difficult puzzles
+        {
+            {1, 2, 3, 4, 5, 6, 7, 8, 9},
+            {4, 5, 6, 7, 8, 9, 1, 2, 3},
+            {7, 8, 9, 1, 2, 3, 4, 5, 6},
+            {2, 3, 1, 5, 6, 4, 8, 9, 7},
+            {5, 6, 4, 8, 9, 7, 2, 3, 1},
+            {8, 9, 7, 2, 3, 1, 5, 6, 4},
+            {3, 1, 2, 6, 4, 5, 9, 7, 8},
+            {6, 4, 5, 9, 7, 8, 3, 1, 2},
+            {9, 7, 8, 3, 1, 2, 6, 4, 5}
+        },
+        {
+            {1, 2, 3, 4, 5, 6, 7, 8, 9},
+            {4, 5, 6, 7, 8, 9, 1, 2, 3},
+            {7, 8, 9, 1, 2, 3, 4, 5, 6},
+            {2, 3, 1, 5, 6, 4, 8, 9, 7},
+            {5, 6, 4, 8, 9, 7, 2, 3, 1},
+            {8, 9, 7, 2, 3, 1, 5, 6, 4},
+            {3, 1, 2, 6, 4, 5, 9, 7, 8},
+            {6, 4, 5, 9, 7, 8, 3, 1, 2},
+            {9, 7, 8, 3, 1, 2, 6, 4, 5}
+        }
+    };
+
+    long totalComputationalTime = 0; // Initialize total computational time
+
+    for (int i = 0; i < puzzles.length; i++) {
+        System.out.println("Puzzle " + (i + 1) + ":");
+        long startTime = System.nanoTime(); // Start time
+        SudokuSolverincremental solver = new SudokuSolverincremental(puzzles[i]);
+        solver.solve(); // Solve the Sudoku puzzle
+        totalComputationalTime += (System.nanoTime() - startTime); // Accumulate computational time
+        System.out.println();
+    }
+
+    // Calculate and print average computational time
+    long averageComputationalTime = totalComputationalTime / puzzles.length;
+    System.out.println("Average Computational Time: " + averageComputationalTime + " nanoseconds");
+}
 }
